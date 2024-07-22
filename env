@@ -7,6 +7,8 @@ ALIYUN_OPEN_TOKEN=
 ALIYUN_FOLDER_ID=
 # 夸克网盘的cookie
 QUARK_COOKIE=
+# 115网盘的cookie
+PAN115_COOKIE=
 # 自动更新小雅alist文件
 AUTO_UPDATE_ENABLED=true
 # 自动清理阿里云盘
@@ -39,3 +41,5 @@ AUTO_UPDATE_EMBY_INTERVAL=
 AUTO_UPDATE_EMBY_METADATA_ENABLED=true
 # emby的apikey
 EMBY_APIKEY=
+# 下载解压完是否清除源文件，true/false，默认false
+CLEAR_TEMP=

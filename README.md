@@ -9,8 +9,8 @@
 <a href="https://github.com/monlor/docker-xiaoya/actions/workflows/docker-build.yml"><img src="https://github.com/monlor/docker-xiaoya/actions/workflows/docker-build.yml/badge.svg" alt="Build Status"></a> 
 <a><img src="https://img.shields.io/github/repo-size/monlor/docker-xiaoya.svg?style=flat" alt="repo size"></a> 
 <a href="https://github.com/monlor/docker-xiaoya/releases/latest"><img src="https://img.shields.io/github/v/release/monlor/docker-xiaoya" alt="GitHub release (latest by date)"></a> 
-<a href="https://github.com/monlor/docker-xiaoya/graphs/contributors"><img src="https://img.shields.io/badge/Contributors-3-orange.svg" alt="All Contributors"></a> 
-<a href="https://afdian.net/a/monlor"><img src="https://img.shields.io/badge/爱发电-monlor-purple" alt="爱发电"></a>
+<a href="https://github.com/monlor/docker-xiaoya/graphs/contributors"><img src="https://img.shields.io/badge/Contributors-6-orange.svg" alt="All Contributors"></a> 
+<a href="https://buymeacoffee.com/monlor"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-048754?logo=buymeacoffee" alt="buymeacoffee"></a>
 </p>
 
 ## 功能特性
@@ -31,6 +31,7 @@
 * 支持小雅PikPak网盘资源，挂载自定义PikPak资源
 * 支持小雅阿里云盘资源，挂载自定义阿里云盘资源
 * 支持WebDav，TvBox服务
+* [Beta]适配Armv7设备，包括alist, emby和jellyfin
 
 ## 提问规则
 
@@ -44,13 +45,13 @@
 > 脚本支持重复执行
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/monlor/docker-xiaoya/main/install.sh)"
+export VERSION=v1.2.14 && bash -c "$(curl -fsSL https://raw.githubusercontent.com/monlor/docker-xiaoya/main/install.sh)"
 ```
 
 **使用加速源**
 
 ```bash
-export GH_PROXY=https://gh.monlor.com/ IMAGE_PROXY=ghcr.monlor.com && bash -c "$(curl -fsSL ${GH_PROXY}https://raw.githubusercontent.com/monlor/docker-xiaoya/main/install.sh)"
+export VERSION=v1.2.14 GH_PROXY=https://gh.monlor.com/ IMAGE_PROXY=ghcr.monlor.com && bash -c "$(curl -fsSL ${GH_PROXY}https://raw.githubusercontent.com/monlor/docker-xiaoya/main/install.sh)"
 ```
 
 **环境信息**
@@ -147,6 +148,52 @@ docker compose up -d
 docker compose logs
 ```
 
+### 部署在 Kubernetes
+
+1. 安装helm
+
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
+2. 安装helmfile
+
+```bash
+ver=0.161.0
+curl -LO https://github.com/helmfile/helmfile/releases/download/v${ver}/helmfile_${ver}_linux_arm64.tar.gz
+tar zxvf helmfile_${ver}_linux_arm64.tar.gz -C helmfile
+mv helmfile/helmfile /usr/local/bin
+rm -rf helmfile helmfile_${ver}_linux_arm64.tar.gz
+helm plugin install https://github.com/databus23/helm-diff
+```
+
+3. 下载helmfile配置
+
+```bash
+curl -#LO https://raw.githubusercontent.com/monlor/docker-xiaoya/main/helmfile.yaml
+```
+
+4. 修改helmfile的环境变量，环境变量含义看这里[alist](/alist)
+
+```yaml
+env:
+    ...
+    WEBDAV_PASSWORD: 
+    ALIYUN_TOKEN: 
+    ALIYUN_OPEN_TOKEN: 
+    ALIYUN_FOLDER_ID: 
+    QUARK_COOKIE:
+    PAN115_COOKIE:
+    PIKPAK_USER:
+    ...
+```
+
+5. 部署helm服务
+
+```bash
+helmfile sync -f helmfile.yaml
+```
+
 ### 使用docker部署【不推荐】
 
 1. 创建volume
@@ -229,7 +276,7 @@ docker logs emby
 
 ## 赞助
 
-[![](https://img.shields.io/badge/爱发电-monlor-purple)](https://afdian.net/a/monlor)
+<a href="https://www.buymeacoffee.com/monlor" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## License
 

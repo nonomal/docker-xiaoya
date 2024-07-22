@@ -1,4 +1,4 @@
-FROM xiaoyaliu/glue:latest
+FROM python:3.12-slim
 
 LABEL MAINTAINER me@monlor.com
 
@@ -9,27 +9,18 @@ WORKDIR /media
 # 设置非交互模式，以避免安装过程中提示用户输入
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV LANG=zh_CN.UTF-8 \
-    LANGUAGE=zh_CN:zh \
-    LC_ALL=zh_CN.UTF-8
+ENV LANG=C.UTF-8
 
 RUN apt-get update && \
-    apt-get install -y cron locales fonts-wqy-zenhei software-properties-common && \
-    locale-gen zh_CN.UTF-8 && \
-    update-locale LANG=zh_CN.UTF-8 && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install -y python3.12 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
-    update-alternatives --config python3 && \
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
-    apt-get remove -y software-properties-common && \
+    apt-get install -y cron locales fonts-wqy-zenhei busybox unzip curl fd-find gzip lsof sqlite3 httpie jq tzdata aria2 p7zip-full && \
+    locale-gen C.UTF-8 && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* 
-    
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
 # 安装solid
-RUN curl -#LO https://github.com/Rik-F5/xiaoya_db/archive/refs/heads/main.zip && \
+RUN curl -#LO https://gh.monlor.com/https://github.com/Rik-F5/xiaoya_db/archive/refs/heads/main.zip && \
     unzip main.zip && \
     pip install -r xiaoya_db-main/requirements.txt && \
     mv xiaoya_db-main/solid.py / && \

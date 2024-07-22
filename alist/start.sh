@@ -50,6 +50,14 @@ else
     rm -rf /data/quark_cookie.txt
 fi  
 
+# 设置115 cookie
+if [ -n "${PAN115_COOKIE:-}" ]; then
+    echo "添加115网盘 Cookie..."
+    echo "${PAN115_COOKIE}" > /data/115_cookie.txt
+else
+    rm -rf /data/115_cookie.txt
+fi  
+
 # 设置pikpak用户密码观看pikpak资源
 if [ -n "${PIKPAK_USER:-}" ]; then
     echo "设置PIKPAK用户密码..."
@@ -118,6 +126,21 @@ else
     rm -rf /data/quarkshare_list.txt
 fi  
 
+# 挂载额外的115网盘分享
+if [ -n "${PAN115_SHARE_LIST:-}" ]; then
+    echo "挂载额外的115网盘分享..."
+    rm -rf /data/115share_list.txt
+    echo "${PAN115_SHARE_LIST}" | tr ',' '\n' | while read -r line; do
+        name=$(echo "$line" | cut -d':' -f1)
+        share_id=$(echo "$line" | cut -d':' -f2)
+        folder_id=$(echo "$line" | cut -d':' -f3)
+        code=$(echo "$line" | cut -d':' -f4)
+        echo "${name} ${share_id} ${folder_id} ${code}" >> /data/115share_list.txt
+    done
+else
+    rm -rf /data/115share_list.txt
+fi  
+
 # 开启tvbox随机订阅
 if [ "${TVBOX_SECURITY:=false}" = "true" ]; then
     echo "已开启TVBOX安全模式..."
@@ -166,7 +189,21 @@ fi
 
 if [ "${AUTO_CLEAR_ENABLED:=false}" = "true" ]; then
     echo "启动定时清理定时任务..."
-    crontabs="${crontabs}\n*/${AUTO_CLEAR_INTERVAL:=10} * * * * /clear.sh"
+    AUTO_CLEAR_INTERVAL=${AUTO_CLEAR_INTERVAL:=10}
+    HOURS=$(($AUTO_CLEAR_INTERVAL / 60))
+    REMAINING_MINUTES=$(($AUTO_CLEAR_INTERVAL % 60))
+    
+    if [ $HOURS -gt 0 ]; then
+      if [ $REMAINING_MINUTES -eq 0 ]; then
+        CRONTAB_TIME="0 */$HOURS * * *"
+      else
+        CRONTAB_TIME="$REMAINING_MINUTES */$HOURS * * *"
+      fi
+    else
+      CRONTAB_TIME="*/$REMAINING_MINUTES * * * *"
+    fi
+    crontabs="${crontabs}\n$CRONTAB_TIME /clear.sh"
+    #crontabs="${crontabs}\n*/${AUTO_CLEAR_INTERVAL:=10} * * * * /clear.sh"
 fi
 
 # 添加后台守护

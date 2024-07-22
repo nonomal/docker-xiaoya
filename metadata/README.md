@@ -12,11 +12,13 @@
 
 `EMBY_APIKEY`: emby api 密钥，建议修改emby的api密钥，设置此变量，用于定期同步emby配置
 
-`EMBY_URL`: emby地址，默认：http://emby:6908
+`EMBY_ADDR`: emby地址，默认：http://emby:6908
 
 `ALIST_ADDR`: alist地址，默认：http://alist:5678
 
 `DISK_CHECK_ENABLED`: 磁盘剩余空间检测开关，true/false，默认true
+
+`CLEAR_TEMP`: 下载解压完是否清除源文件，true/false，默认false
 
 ## emby数据管理
 
